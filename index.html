@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nexora — Modern Financial Intelligence Dashboard</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              indigo: '#4F46E5',
+              indigoDark: '#4338CA',
+              violet: '#6366F1',
+              amber: '#F59E0B',
+              canvas: '#F4F5F8',
+              obsidian: '#0B0E14',
+              cardDark: '#131722',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Nexora custom styles -->
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+</head>
+
+<body class="min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+
+  <!-- ==========================================================================
+       TOP STICKY HEADER (h-20, sticky top-0 z-30)
+       ========================================================================== -->
+  <header class="sticky top-0 z-30 h-20 w-full bg-[#F4F5F8]/90 dark:bg-[#0B0E14]/90 backdrop-blur-md px-4 sm:px-6 lg:px-8 flex items-center justify-between transition-colors">
+    <!-- Left: Mobile Drawer Trigger + Brand Emblem -->
+    <div class="flex items-center gap-3">
+      <button id="mobileMenuBtn" type="button" aria-label="Open Navigation Menu"
+        class="lg:hidden w-10 h-10 rounded-full bg-white dark:bg-[#131722] border border-slate-200/80 dark:border-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-200 shadow-2xs hover:border-indigo-400 transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h10" />
+        </svg>
+      </button>
+
+      <!-- Nexora Custom Sharp Geometric SVG Logo -->
+      <a href="#overview" onclick="switchTab('overview'); return false;" class="flex items-center gap-2.5 group">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#4F46E5] via-[#554CEB] to-[#6366F1] flex items-center justify-center shadow-md shadow-indigo-500/25 group-hover:scale-105 transition-transform">
+          <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none">
+            <path d="M5 17V7L13.5 17V7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M17.5 7H19.5V17H17.5" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="text-[20px] font-bold tracking-tight text-slate-900 dark:text-white">Nexora</span>
+      </a>
+    </div>
+
+    <!-- Center: Floating White Pill Navigation Bar (6 Tabs) -->
+    <nav aria-label="Primary Navigation"
+      class="hidden md:flex items-center bg-white dark:bg-[#131722] rounded-full p-1.5 shadow-[0_2px_14px_rgba(15,23,42,0.03)] border border-slate-100 dark:border-slate-800/80">
+      <button type="button" data-tab="overview" onclick="switchTab('overview')"
+        class="top-nav-pill px-5 py-2 rounded-full text-[13.5px] font-medium transition-all bg-[#4F46E5] text-white shadow-sm shadow-indigo-500/25">
+        Overview
+      </button>
+      <button type="button" data-tab="activity" onclick="switchTab('activity')"
+        class="top-nav-pill px-5 py-2 rounded-full text-[13.5px] font-medium transition-all text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+        Activity
+      </button>
+      <button type="button" data-tab="manage" onclick="switchTab('manage')"
+        class="top-nav-pill px-5 py-2 rounded-full text-[13.5px] font-medium transition-all text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+        Manage
+      </button>
+      <button type="button" data-tab="program" onclick="switchTab('program')"
+        class="top-nav-pill px-5 py-2 rounded-full text-[13.5px] font-medium transition-all text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+        Program
+      </button>
+      <button type="button" data-tab="account" onclick="switchTab('account')"
+        class="top-nav-pill px-5 py-2 rounded-full text-[13.5px] font-medium transition-all text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+        Account
+      </button>
+      <button type="button" data-tab="reports" onclick="switchTab('reports')"
+        class="top-nav-pill px-5 py-2 rounded-full text-[13.5px] font-medium transition-all text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+        Reports
+      </button>
+    </nav>
+
+    <!-- Right: 3 Circular Action Buttons + User Profile Pill -->
+    <div class="flex items-center gap-2.5 sm:gap-3 relative">
+      <!-- Quick Search Trigger -->
+      <button type="button" onclick="focusGlobalSearch()" title="Quick Search (Ctrl+K)"
+        class="w-10 h-10 rounded-full bg-white dark:bg-[#131722] border border-slate-100 dark:border-slate-800 shadow-[0_2px_10px_rgba(15,23,42,0.03)] flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-[#4F46E5] dark:hover:text-indigo-400 transition">
+        <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="7" />
+          <path stroke-linecap="round" d="M20 20l-3.5-3.5" />
+        </svg>
+      </button>
+
+      <!-- Notifications Trigger & Popover -->
+      <div class="relative">
+        <button type="button" id="notifBtn" onclick="togglePopover('notifPopover')" title="Notifications"
+          class="w-10 h-10 rounded-full bg-white dark:bg-[#131722] border border-slate-100 dark:border-slate-800 shadow-[0_2px_10px_rgba(15,23,42,0.03)] flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-[#4F46E5] transition relative">
+          <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          </svg>
+          <span id="notifDot" class="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-[#F59E0B] ring-2 ring-white dark:ring-[#131722]"></span>
+        </button>
+
+        <!-- Notifications Popover -->
+        <div id="notifPopover" class="hidden absolute right-0 mt-2.5 w-80 bg-white dark:bg-[#131722] rounded-2xl shadow-xl border border-slate-100 dark:border-slate-800 p-4 z-50">
+          <div class="flex items-center justify-between pb-2.5 border-b border-slate-100 dark:border-slate-800">
+            <span class="text-[13px] font-semibold text-slate-900 dark:text-white">Notifications</span>
+            <button type="button" onclick="markNotificationsRead()" class="text-[11.5px] font-medium text-[#4F46E5] hover:underline">Mark all read</button>
+          </div>
+          <div class="divide-y divide-slate-100 dark:divide-slate-800/80 text-[12.5px]">
+            <div class="py-2.5 flex items-start gap-2.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 mt-1.5 shrink-0"></span>
+              <div>
+                <p class="font-medium text-slate-800 dark:text-slate-200">Mobile App Purchase Settled</p>
+                <p class="text-[11px] text-slate-400">INV_000076 ($25,500) cleared via USD Wallet.</p>
+              </div>
+            </div>
+            <div class="py-2.5 flex items-start gap-2.5">
+              <span class="w-2 h-2 rounded-full bg-[#F59E0B] mt-1.5 shrink-0"></span>
+              <div>
+                <p class="font-medium text-slate-800 dark:text-slate-200">Amber Gold Cashback Unlocked</p>
+                <p class="text-[11px] text-slate-400">You earned +2.5% tier reward on Q2 volume.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info / System Status Trigger -->
+      <div class="relative hidden sm:block">
+        <button type="button" onclick="togglePopover('infoPopover')" title="Workspace Info"
+          class="w-10 h-10 rounded-full bg-white dark:bg-[#131722] border border-slate-100 dark:border-slate-800 shadow-[0_2px_10px_rgba(15,23,42,0.03)] flex items-center justify-center text-slate-600 dark:text-slate-300 hover:text-[#4F46E5] transition">
+          <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9" />
+            <path stroke-linecap="round" d="M12 8v4m0 4h.01" />
+          </svg>
+        </button>
+
+        <div id="infoPopover" class="hidden absolute right-0 mt-2.5 w-72 bg-white dark:bg-[#131722] rounded-2xl shadow-xl border border-slate-100 dark:border-slate-800 p-4 z-50">
+          <p class="text-[13px] font-semibold text-slate-900 dark:text-white">Nexora Treasury Core v4.2</p>
+          <p class="text-[12px] text-slate-500 dark:text-slate-400 mt-1">All multi-currency clearing rails (USD, EUR, GBP) are operational. Changes persist locally.</p>
+          <div class="mt-3 flex items-center gap-2 text-[11.5px] text-emerald-600 dark:text-emerald-400 font-medium">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            99.99% Uptime • Real-Time Sync
+          </div>
+        </div>
+      </div>
+
+      <!-- User Profile Pill -->
+      <div class="relative">
+        <button type="button" onclick="togglePopover('profilePopover')"
+          class="bg-white dark:bg-[#131722] rounded-full pl-1.5 pr-3.5 py-1.5 border border-slate-100 dark:border-slate-800 shadow-[0_2px_10px_rgba(15,23,42,0.03)] flex items-center gap-2.5 hover:border-indigo-200 dark:hover:border-slate-700 transition">
+          <img
+            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=85"
+            alt="Aiden Pratama"
+            onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22><rect width=%2280%22 height=%2280%22 rx=%2240%22 fill=%22%234F46E5%22/><text x=%2250%25%22 y=%2254%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22Inter,sans-serif%22 font-weight=%22700%22 font-size=%2228%22>AP</text></svg>';"
+            class="w-9 h-9 rounded-full object-cover ring-2 ring-indigo-500/20"
+          />
+          <div class="hidden sm:block text-left">
+            <p class="text-[13px] font-semibold text-slate-900 dark:text-white leading-tight">Aiden Pratama</p>
+            <p class="text-[11px] text-slate-400 leading-tight">aiden.pratama@nexora.io</p>
+          </div>
+          <svg class="w-3.5 h-3.5 text-slate-400 ml-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <!-- Profile Dropdown Menu -->
+        <div id="profilePopover" class="hidden absolute right-0 mt-2.5 w-56 bg-white dark:bg-[#131722] rounded-2xl shadow-xl border border-slate-100 dark:border-slate-800 p-2 z-50">
+          <button type="button" onclick="switchTab('account'); closeAllPopovers();" class="w-full text-left px-3 py-2 rounded-xl text-[13px] text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/70 flex items-center gap-2.5">
+            <span class="w-2 h-2 rounded-full bg-[#4F46E5]"></span> Account & Security
+          </button>
+          <button type="button" onclick="switchTab('manage'); closeAllPopovers();" class="w-full text-left px-3 py-2 rounded-xl text-[13px] text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/70 flex items-center gap-2.5">
+            <span class="w-2 h-2 rounded-full bg-[#F59E0B]"></span> Wallets & Cards
+          </button>
+          <button type="button" onclick="toggleTheme(); closeAllPopovers();" class="w-full text-left px-3 py-2 rounded-xl text-[13px] text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/70 flex items-center gap-2.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Switch Theme Mode
+          </button>
+          <div class="my-1 border-t border-slate-100 dark:border-slate-800"></div>
+          <button type="button" onclick="resetDemoData(); closeAllPopovers();" class="w-full text-left px-3 py-2 rounded-xl text-[13px] text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 font-medium">
+            Reset Demo Data
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       WORKSPACE SHELL (INDEPENDENT SCROLLING SIDEBAR + MAIN CONTENT AREA)
+       ========================================================================== -->
+  <div class="flex-1 flex max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 pb-10 gap-5 lg:gap-6">
+
+    <!-- Mobile Backdrop -->
+    <div id="mobileBackdrop" onclick="closeMobileDrawer()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-40 hidden lg:hidden"></div>
+
+    <!-- Left Slim Icon Sidebar (w-[72px], 3 Floating Vertical Pills, Independent Scroll) -->
+    <aside id="leftSidebar"
+      class="fixed lg:sticky top-0 lg:top-20 left-0 z-50 lg:z-20 h-screen lg:h-[calc(100vh-5.5rem)] w-[76px] shrink-0 overflow-y-auto py-4 lg:py-1 flex flex-col items-center justify-between gap-4 bg-[#F4F5F8] dark:bg-[#0B0E14] lg:bg-transparent transition-transform duration-300 -translate-x-full lg:translate-x-0">
+
+      <!-- Top Vertical Pill: Light / Dark Mode Switcher -->
+      <div class="bg-white dark:bg-[#131722] rounded-full p-1.5 shadow-[0_2px_12px_rgba(15,23,42,0.03)] border border-slate-100 dark:border-slate-800 flex flex-col items-center gap-1.5">
+        <button type="button" id="lightModeBtn" onclick="setTheme('light')" title="Clean Light Mode"
+          class="w-9 h-9 rounded-full flex items-center justify-center bg-[#F4F5F8] text-slate-900 transition-all">
+          <svg class="w-[17px] h-[17px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="4" />
+            <path stroke-linecap="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+          </svg>
+        </button>
+        <button type="button" id="darkModeBtn" onclick="setTheme('dark')" title="Obsidian Dark Mode"
+          class="w-9 h-9 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-white transition-all">
+          <svg class="w-[16px] h-[16px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Middle Vertical Pill: 7 Navigation Icons -->
+      <div class="bg-white dark:bg-[#131722] rounded-full p-1.5 shadow-[0_2px_12px_rgba(15,23,42,0.03)] border border-slate-100 dark:border-slate-800 flex flex-col items-center gap-2">
+        <!-- 1. Overview Grid (Active Royal Indigo Circle) -->
+        <button type="button" data-side-tab="overview" onclick="switchTab('overview')" title="Overview Dashboard"
+          class="side-nav-btn w-10 h-10 rounded-full flex items-center justify-center bg-[#4F46E5] text-white shadow-md shadow-indigo-500/25 transition-all">
+          <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7" rx="2" />
+            <rect x="14" y="3" width="7" height="7" rx="2" />
+            <rect x="3" y="14" width="7" height="7" rx="2" />
+            <rect x="14" y="14" width="7" height="7" rx="2" />
+          </svg>
+        </button>
+
+        <!-- 2. Calendar / Scheduled -->
+        <button type="button" data-side-tab="activity" onclick="switchTab('activity')" title="Scheduled Activities"
+          class="side-nav-btn w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:text-[#4F46E5] hover:bg-slate-50 dark:hover:bg-slate-800/70 transition-all">
+          <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="18" rx="3" />
+            <path stroke-linecap="round" d="M16 2v4M8 2v4M3 10h18" />
+          </svg>
+        </button>
+
+        <!-- 3. Mail / Statements -->
+        <button type="button" data-side-tab="reports" onclick="switchTab('reports')" title="Statements & Inbox"
+          class="side-nav-btn w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:text-[#4F46E5] hover:bg-slate-50 dark:hover:bg-slate-800/70 transition-all">
+          <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
+            <rect x="3" y="5" width="18" height="14" rx="3" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l9 6 9-6" />
+          </svg>
+        </button>
+
+        <!-- 4. Documents / Invoices -->
+        <button type="button" data-side-tab="activity" onclick="switchTab('activity')" title="Invoices & Ledger"
+          class="side-nav-btn w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:text-[#4F46E5] hover:bg-slate-50 dark:hover:bg-slate-800/70 transition-all">
+          <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </button>
+
+        <!-- 5. Team / Partner Program -->
+        <button type="button" data-side-tab="program" onclick="switchTab('program')" title="Rewards & Partner Program"
+          class="side-nav-btn w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:text-[#4F46E5] hover:bg-slate-50 dark:hover:bg-slate-800/70 transition-all">
+          <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </button>
+
+        <!-- 6. Layers / Wallets & Cards -->
+        <button type="button" data-side-tab="manage" onclick="switchTab('manage')" title="Manage Wallets & Cards"
+          class="side-nav-btn w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:text-[#4F46E5] hover:bg-slate-50 dark:hover:bg-slate-800/70 transition-all">
+          <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+          </svg>
+        </button>
+
+        <!-- 7. Settings / Account -->
+        <button type="button" data-side-tab="account" onclick="switchTab('account')" title="Account Settings"
+          class="side-nav-btn w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:text-[#4F46E5] hover:bg-slate-50 dark:hover:bg-slate-800/70 transition-all">
+          <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Bottom Vertical Pill: Help & Logout -->
+      <div class="bg-white dark:bg-[#131722] rounded-full p-1.5 shadow-[0_2px_12px_rgba(15,23,42,0.03)] border border-slate-100 dark:border-slate-800 flex flex-col items-center gap-1.5">
+        <button type="button" onclick="showToast('Nexora Concierge Support is available 24/7.', 'info')" title="Help Center"
+          class="w-9 h-9 rounded-full flex items-center justify-center text-slate-400 hover:text-[#4F46E5] transition">
+          <svg class="w-[17px] h-[17px]" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3m.08 4h.01" />
+          </svg>
+        </button>
+        <button type="button" onclick="showToast('Session locked safely. Welcome back, Aiden!', 'amber')" title="Lock Session"
+          class="w-9 h-9 rounded-full flex items-center justify-center text-slate-400 hover:text-rose-500 transition">
+          <svg class="w-[17px] h-[17px]" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ========================================================================
+         MAIN SCROLLABLE CONTENT AREA
+         ======================================================================== -->
+    <main class="flex-1 min-w-0 pt-1">
+
+      <!-- Mobile Tab Strip (Visible on small screens) -->
+      <div class="flex md:hidden items-center gap-1.5 overflow-x-auto pb-3 mb-2">
+        <button type="button" data-tab="overview" onclick="switchTab('overview')" class="top-nav-pill shrink-0 px-4 py-1.5 rounded-full text-[12.5px] font-medium bg-[#4F46E5] text-white">Overview</button>
+        <button type="button" data-tab="activity" onclick="switchTab('activity')" class="top-nav-pill shrink-0 px-4 py-1.5 rounded-full text-[12.5px] font-medium bg-white dark:bg-[#131722] text-slate-600 dark:text-slate-300">Activity</button>
+        <button type="button" data-tab="manage" onclick="switchTab('manage')" class="top-nav-pill shrink-0 px-4 py-1.5 rounded-full text-[12.5px] font-medium bg-white dark:bg-[#131722] text-slate-600 dark:text-slate-300">Manage</button>
+        <button type="button" data-tab="program" onclick="switchTab('program')" class="top-nav-pill shrink-0 px-4 py-1.5 rounded-full text-[12.5px] font-medium bg-white dark:bg-[#131722] text-slate-600 dark:text-slate-300">Program</button>
+        <button type="button" data-tab="account" onclick="switchTab('account')" class="top-nav-pill shrink-0 px-4 py-1.5 rounded-full text-[12.5px] font-medium bg-white dark:bg-[#131722] text-slate-600 dark:text-slate-300">Account</button>
+        <button type="button" data-tab="reports" onclick="switchTab('reports')" class="top-nav-pill shrink-0 px-4 py-1.5 rounded-full text-[12.5px] font-medium bg-white dark:bg-[#131722] text-slate-600 dark:text-slate-300">Reports</button>
+      </div>
+
+      <!-- ======================================================================
+           VIEW 1: OVERVIEW (100% 1:1 BENTO GRID DASHBOARD)
+           ====================================================================== -->
+      <section id="view-overview" class="spa-view space-y-5">
+
+        <!-- Greeting Header -->
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 animate-stagger-1">
+          <div>
+            <h1 class="text-[28px] sm:text-[32px] font-semibold tracking-tight text-slate-900 dark:text-white leading-tight">
+              Good morning, Aiden
+            </h1>
+            <p class="text-[13.5px] text-slate-500 dark:text-slate-400 mt-1">
+              Stay on top of your tasks, monitor progress, and track status.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 self-start sm:self-auto">
+            <button type="button" onclick="resetDemoData()"
+              class="px-3.5 py-2 rounded-full text-[12px] font-medium bg-white dark:bg-[#131722] text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-800 hover:border-amber-400 hover:text-amber-600 transition flex items-center gap-1.5 shadow-2xs">
+              <svg class="w-3.5 h-3.5 text-[#F59E0B]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Reset Data
+            </button>
+          </div>
+        </div>
+
+        <!-- BENTO GRID ROW 1: 3 Columns on Desktop -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+          <!-- COLUMN 1 (lg:col-span-4): Total Balance & Wallets Card -->
+          <div class="lg:col-span-4 bento-card animate-stagger-2 bg-white dark:bg-[#131722] rounded-[24px] p-5 border border-slate-100/90 dark:border-slate-800/80 shadow-[0_2px_14px_rgba(15,23,42,0.025)] flex flex-col justify-between">
+            <div>
+              <!-- Header + Currency Switcher Pill -->
+              <div class="flex items-center justify-between">
+                <span class="text-[14px] font-medium text-slate-500 dark:text-slate-400">Total Balance</span>
+                <div class="relative">
+                  <button type="button" onclick="togglePopover('currencyPopover')"
+                    class="flex items-center gap-1.5 bg-[#F8F9FB] dark:bg-[#1A202E] hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/70 dark:border-slate-700/70 rounded-full px-2.5 py-1 text-[12px] font-semibold text-slate-700 dark:text-slate-200 transition">
+                    <span id="selectedCurrencyFlag" class="w-4 h-4 rounded-full overflow-hidden shrink-0 inline-flex items-center justify-center"></span>
+                    <span id="selectedCurrencyCode">USD</span>
+                    <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+
+                  <!-- Currency Dropdown -->
+                  <div id="currencyPopover" class="hidden absolute right-0 mt-1.5 w-32 bg-white dark:bg-[#1A202E] rounded-xl shadow-lg border border-slate-100 dark:border-slate-700 py-1 z-30">
+                    <button type="button" onclick="setDisplayCurrency('USD')" class="w-full px-3 py-1.5 text-left text-[12px] font-medium hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2 text-slate-700 dark:text-slate-200">
+                      <span class="w-4 h-4 rounded-full overflow-hidden inline-flex" id="flag-opt-USD"></span> USD ($)
+                    </button>
+                    <button type="button" onclick="setDisplayCurrency('EUR')" class="w-full px-3 py-1.5 text-left text-[12px] font-medium hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2 text-slate-700 dark:text-slate-200">
+                      <span class="w-4 h-4 rounded-full overflow-hidden inline-flex" id="flag-opt-EUR"></span> EUR (€)
+                    </button>
+                    <button type="button" onclick="setDisplayCurrency('GBP')" class="w-full px-3 py-1.5 text-left text-[12px] font-medium hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2 text-slate-700 dark:text-slate-200">
+                      <span class="w-4 h-4 rounded-full overflow-hidden inline-flex" id="flag-opt-GBP"></span> GBP (£)
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Main Balance Value -->
+              <div id="totalBalanceDisplay" class="text-[30px] sm:text-[32px] font-bold tracking-tight text-slate-900 dark:text-white mt-1.5 leading-none">
+                $689,372.00
+              </div>
+
+              <!-- Growth Badge -->
+              <div class="flex items-center gap-2 mt-2.5">
+                <span class="inline-flex items-center gap-0.5 bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[11.5px] font-semibold px-2 py-0.5 rounded-full">
+                  ↑ 5%
+                </span>
+                <span class="text-[12px] text-slate-400">than last month</span>
+              </div>
+
+              <!-- Action Buttons: Transfer & Request -->
+              <div class="grid grid-cols-2 gap-3 mt-4">
+                <button type="button" onclick="openQuickActionModal('Transfer')"
+                  class="bg-[#4F46E5] hover:bg-[#4338CA] active:scale-[0.99] text-white font-medium text-[13.5px] py-2.5 px-4 rounded-full flex items-center justify-center gap-2 shadow-sm shadow-indigo-500/20 transition-all">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                  </svg>
+                  Transfer
+                </button>
+                <button type="button" onclick="openQuickActionModal('Request')"
+                  class="bg-[#F4F5F8] dark:bg-[#1A202E] hover:bg-slate-200/75 dark:hover:bg-slate-800 active:scale-[0.99] text-slate-800 dark:text-slate-200 font-medium text-[13.5px] py-2.5 px-4 rounded-full flex items-center justify-center gap-2 transition-all">
+                  <svg class="w-4 h-4 text-slate-600 dark:text-slate-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                  </svg>
+                  Request
+                </button>
+              </div>
+            </div>
+
+            <!-- Wallets Sub-section -->
+            <div class="mt-5 pt-1">
+              <div class="flex items-center justify-between mb-2.5">
+                <div class="flex items-center gap-1.5 text-[12.5px]">
+                  <span class="font-semibold text-slate-800 dark:text-slate-200">Wallets</span>
+                  <span class="text-slate-300 dark:text-slate-700">|</span>
+                  <span class="text-slate-400">Total 6 wallets</span>
+                </div>
+                <button type="button" onclick="switchTab('manage')" class="text-[11.5px] font-medium text-[#4F46E5] hover:underline">View all</button>
+              </div>
+
+              <!-- 3 Mini Wallet Cards Grid -->
+              <div id="overviewWalletsGrid" class="grid grid-cols-3 gap-2.5">
+                <!-- Populated dynamically by JS for instant toggle & sync -->
+              </div>
+            </div>
+          </div>
+
+          <!-- COLUMN 2 (lg:col-span-4): 2x2 KPI Metric Cards Grid -->
+          <div class="lg:col-span-4 bento-card animate-stagger-3 bg-white dark:bg-[#131722] rounded-[24px] p-4 border border-slate-100/90 dark:border-slate-800/80 shadow-[0_2px_14px_rgba(15,23,42,0.025)] grid grid-cols-2 gap-3.5">
+
+            <!-- KPI Card 1: Featured Royal Indigo Gradient Card (Total Earnings) -->
+            <div class="rounded-[18px] p-4 bg-gradient-to-br from-[#4F46E5] via-[#564DEC] to-[#6366F1] text-white flex flex-col justify-between shadow-md shadow-indigo-500/20 relative overflow-hidden group">
+              <div class="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-white/10 blur-xl pointer-events-none group-hover:scale-125 transition-transform duration-500"></div>
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-[13.5px] font-medium text-white/95">Total Earnings</span>
+                <span class="w-8 h-8 rounded-full bg-white/15 backdrop-blur-xs flex items-center justify-center shrink-0">
+                  <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
+                    <rect x="2" y="6" width="20" height="14" rx="3" />
+                    <path d="M16 13h2" stroke-linecap="round" />
+                  </svg>
+                </span>
+              </div>
+              <div id="kpiEarnings" class="text-[28px] font-bold tracking-tight mt-4 leading-none">$950</div>
+              <div class="flex items-center gap-1.5 mt-3">
+                <span class="bg-white/20 text-white text-[11px] font-semibold px-2 py-0.5 rounded-full">↑ 7%</span>
+                <span class="text-[11.5px] text-white/80">This month</span>
+              </div>
+            </div>
+
+            <!-- KPI Card 2: Total Spending -->
+            <div class="rounded-[18px] p-4 bg-[#F8F9FB] dark:bg-[#1A202E] border border-slate-100/80 dark:border-slate-800/70 flex flex-col justify-between hover:border-indigo-200 dark:hover:border-slate-700 transition">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-[13.5px] font-medium text-slate-700 dark:text-slate-200">Total Spending</span>
+                <span class="w-8 h-8 rounded-full bg-white dark:bg-[#131722] shadow-2xs flex items-center justify-center text-slate-600 dark:text-slate-300 shrink-0">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
+                </span>
+              </div>
+              <div id="kpiSpending" class="text-[28px] font-bold tracking-tight text-slate-900 dark:text-white mt-4 leading-none">$700</div>
+              <div class="flex items-center gap-1.5 mt-3">
+                <span class="bg-rose-50 dark:bg-rose-500/15 text-rose-500 text-[11px] font-semibold px-2 py-0.5 rounded-full">↓ 5%</span>
+                <span class="text-[11.5px] text-slate-400">This month</span>
+              </div>
+            </div>
+
+            <!-- KPI Card 3: Total Income -->
+            <div class="rounded-[18px] p-4 bg-[#F8F9FB] dark:bg-[#1A202E] border border-slate-100/80 dark:border-slate-800/70 flex flex-col justify-between hover:border-indigo-200 dark:hover:border-slate-700 transition">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-[13.5px] font-medium text-slate-700 dark:text-slate-200">Total Income</span>
+                <span class="w-8 h-8 rounded-full bg-white dark:bg-[#131722] shadow-2xs flex items-center justify-center text-slate-600 dark:text-slate-300 shrink-0">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
+                    <ellipse cx="12" cy="6" rx="7" ry="3" />
+                    <path d="M5 6v6c0 1.657 3.134 3 7 3s7-1.343 7-3V6" />
+                    <path d="M5 12v6c0 1.657 3.134 3 7 3s7-1.343 7-3v-6" />
+                  </svg>
+                </span>
+              </div>
+              <div id="kpiIncome" class="text-[28px] font-bold tracking-tight text-slate-900 dark:text-white mt-4 leading-none">$1,050</div>
+              <div class="flex items-center gap-1.5 mt-3">
+                <span class="bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[11px] font-semibold px-2 py-0.5 rounded-full">↑ 8%</span>
+                <span class="text-[11.5px] text-slate-400">This month</span>
+              </div>
+            </div>
+
+            <!-- KPI Card 4: Total Revenue -->
+            <div class="rounded-[18px] p-4 bg-[#F8F9FB] dark:bg-[#1A202E] border border-slate-100/80 dark:border-slate-800/70 flex flex-col justify-between hover:border-indigo-200 dark:hover:border-slate-700 transition">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-[13.5px] font-medium text-slate-700 dark:text-slate-200">Total Revenue</span>
+                <span class="w-8 h-8 rounded-full bg-white dark:bg-[#131722] shadow-2xs flex items-center justify-center text-slate-600 dark:text-slate-300 shrink-0">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </span>
+              </div>
+              <div id="kpiRevenue" class="text-[28px] font-bold tracking-tight text-slate-900 dark:text-white mt-4 leading-none">$850</div>
+              <div class="flex items-center gap-1.5 mt-3">
+                <span class="bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 text-[11px] font-semibold px-2 py-0.5 rounded-full">↑ 4%</span>
+                <span class="text-[11.5px] text-slate-400">This month</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- COLUMN 3 (lg:col-span-4): Total Income — Profit and Loss Stacked Bar Chart -->
+          <div class="lg:col-span-4 bento-card animate-stagger-4 bg-white dark:bg-[#131722] rounded-[24px] p-5 border border-slate-100/90 dark:border-slate-800/80 shadow-[0_2px_14px_rgba(15,23,42,0.025)] flex flex-col justify-between">
+            <div>
+              <h2 class="text-[16px] font-semibold text-slate-900 dark:text-white leading-snug">Total Income</h2>
+              <p class="text-[12px] text-slate-400 mt-0.5">View your income in a certain period of time</p>
+            </div>
+
+            <!-- Inner Chart Container -->
+            <div class="mt-3.5 bg-[#F8F9FB] dark:bg-[#1A202E] rounded-[18px] p-4 border border-slate-100/80 dark:border-slate-800/70 flex-1 flex flex-col justify-between relative">
+              <!-- Chart Header & Legend -->
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-[13px] font-semibold text-slate-800 dark:text-slate-200">Profit and Loss</span>
+                <div class="flex items-center gap-3.5 text-[11.5px] font-medium text-slate-600 dark:text-slate-300">
+                  <span class="flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-[3px] bg-[#4F46E5] inline-block"></span>
+                    Profit
+                  </span>
+                  <span class="flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-[3px] bg-[#18191D] dark:bg-slate-400 inline-block"></span>
+                    Loss
+                  </span>
+                </div>
+              </div>
+
+              <!-- Interactive Chart Tooltip -->
+              <div id="chartTooltip" class="hidden pointer-events-none absolute top-11 right-4 bg-slate-900 text-white text-[11px] rounded-xl px-3 py-2 shadow-lg z-20 border border-slate-700/80">
+                <p id="tooltipMonth" class="font-semibold text-amber-400">Jun 2026</p>
+                <p id="tooltipProfit" class="mt-0.5">Profit: $24,000</p>
+                <p id="tooltipLoss">Loss: $26,000</p>
+              </div>
+
+              <!-- Chart Body: Y-Axis + Stacked Columns -->
+              <div class="flex items-stretch gap-2.5 h-[190px] pt-2">
+                <!-- Y-Axis Scale -->
+                <div class="flex flex-col justify-between text-[10.5px] font-medium text-slate-400 pb-5 select-none">
+                  <span>50k</span>
+                  <span>40k</span>
+                  <span>30k</span>
+                  <span>20k</span>
+                  <span>10k</span>
+                  <span>00</span>
+                </div>
+
+                <!-- Gridlines & 8 Month Bars -->
+                <div class="flex-1 relative flex flex-col justify-between">
+                  <!-- Horizontal Dashed Gridlines -->
+                  <div class="absolute inset-x-0 top-0 bottom-5 flex flex-col justify-between pointer-events-none">
+                    <div class="border-b border-dashed border-slate-200/90 dark:border-slate-700/60 w-full"></div>
+                    <div class="border-b border-dashed border-slate-200/90 dark:border-slate-700/60 w-full"></div>
+                    <div class="border-b border-dashed border-slate-200/90 dark:border-slate-700/60 w-full"></div>
+                    <div class="border-b border-dashed border-slate-200/90 dark:border-slate-700/60 w-full"></div>
+                    <div class="border-b border-dashed border-slate-200/90 dark:border-slate-700/60 w-full"></div>
+                    <div class="border-b border-slate-200/90 dark:border-slate-700/60 w-full"></div>
+                  </div>
+
+                  <!-- 8 Stacked Bars Container -->
+                  <div id="profitLossBars" class="relative z-10 flex-1 grid grid-cols-8 gap-2 sm:gap-2.5 items-end px-1">
+                    <!-- Rendered dynamically via JS -->
+                  </div>
+
+                  <!-- X-Axis Labels -->
+                  <div class="grid grid-cols-8 gap-2 sm:gap-2.5 text-center text-[10.5px] font-medium text-slate-400 pt-1.5 px-1 select-none">
+                    <span>Jan</span>
+                    <span>Feb</span>
+                    <span>Mar</span>
+                    <span>Apr</span>
+                    <span>May</span>
+                    <span>Jun</span>
+                    <span>Jul</span>
+                    <span>Aug</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BENTO GRID ROW 2: Asymmetric 2-Column Layout (Left 4 cols, Right 8 cols) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+          <!-- LEFT COLUMN (lg:col-span-4): Monthly Spending Limit + My Cards -->
+          <div class="lg:col-span-4 flex flex-col gap-5 animate-stagger-4">
+
+            <!-- Card 1: Monthly Spending Limit -->
+            <div class="bento-card bg-white dark:bg-[#131722] rounded-[24px] p-5 border border-slate-100/90 dark:border-slate-800/80 shadow-[0_2px_14px_rgba(15,23,42,0.025)]">
+              <div class="flex items-center justify-between">
+                <h3 class="text-[15px] font-semibold text-slate-900 dark:text-white">Monthly Spending Limit</h3>
+                <button type="button" onclick="openLimitModal()" title="Adjust Spending Limit"
+                  class="text-[11.5px] font-medium text-slate-400 hover:text-[#4F46E5] transition flex items-center gap-1">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                  </svg>
+                  Edit
+                </button>
+              </div>
+
+              <!-- Hatched Progress Bar -->
+              <div class="mt-4 h-3.5 w-full rounded-full spending-track-pattern overflow-hidden p-0.5">
+                <div id="spendingProgressBar" style="width: 25.45%;"
+                  class="h-full rounded-full bg-gradient-to-r from-[#4F46E5] to-[#6366F1] transition-all duration-700"></div>
+              </div>
+
+              <!-- Spent Out Of Footer -->
+              <div class="flex items-center justify-between mt-3 text-[12px]">
+                <div>
+                  <span id="spendingUsedText" class="font-bold text-slate-900 dark:text-white">$1,400.00</span>
+                  <span class="text-slate-400 ml-1">spent out of</span>
+                </div>
+                <span id="spendingMaxText" class="font-semibold text-slate-700 dark:text-slate-300">$5,500.00</span>
+              </div>
+            </div>
+
+            <!-- Card 2: My Cards -->
+            <div class="bento-card bg-white dark:bg-[#131722] rounded-[24px] p-5 border border-slate-100/90 dark:border-slate-800/80 shadow-[0_2px_14px_rgba(15,23,42,0.025)] flex-1 flex flex-col justify-between">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <span class="w-8 h-8 rounded-xl bg-[#F4F5F8] dark:bg-[#1A202E] flex items-center justify-center text-slate-700 dark:text-slate-200">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
+                      <rect x="2" y="5" width="20" height="14" rx="3" />
+                      <path d="M2 10h20" />
+                    </svg>
+                  </span>
+                  <h3 class="text-[15px] font-semibold text-slate-900 dark:text-white">My Cards</h3>
+                </div>
+                <button type="button" onclick="openAddCardModal()"
+                  class="bg-[#F4F5F8] dark:bg-[#1A202E] hover:bg-indigo-50 dark:hover:bg-indigo-950/50 text-slate-700 dark:text-slate-200 hover:text-[#4F46E5] text-[12px] font-medium px-3 py-1.5 rounded-full transition flex items-center gap-1">
+                  <span>+</span> Add new
+                </button>
+              </div>
+
+              <!-- Side-by-Side Virtual Cards Grid -->
+              <div id="overviewCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                <!-- Rendered via JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN (lg:col-span-8): Recent Activities Interactive CRUD Data Table -->
+          <div class="lg:col-span-8 bento-card animate-stagger-5 bg-white dark:bg-[#131722] rounded-[24px] p-5 border border-slate-100/90 dark:border-slate-800/80 shadow-[0_2px_14px_rgba(15,23,42,0.025)] flex flex-col justify-between">
+
+            <div>
+              <!-- Table Header & Controls -->
+              <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                <div class="flex items-center gap-2.5">
+                  <h2 class="text-[16px] font-semibold text-slate-900 dark:text-white">Recent Activities</h2>
+                  <span id="activityCountBadge" class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-500/15 text-[#4F46E5] dark:text-indigo-400">10</span>
+                </div>
+
+                <!-- Search, Filter, Bulk Delete, Add New -->
+                <div class="flex flex-wrap items-center gap-2">
+                  <!-- Bulk Delete Button (Contextual) -->
+                  <button type="button" id="bulkDeleteBtn" onclick="openBulkDeleteConfirm()"
+                    class="hidden px-3 py-1.5 rounded-xl bg-rose-50 dark:bg-rose-500/15 text-rose-600 dark:text-rose-400 hover:bg-rose-100 text-[12px] font-semibold transition items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Delete (<span id="selectedRowsCount">0</span>)
+                  </button>
+
+                  <!-- Real-Time Search -->
+                  <div class="relative">
+                    <svg class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <circle cx="11" cy="11" r="7" />
+                      <path stroke-linecap="round" d="M20 20l-3.5-3.5" />
+                    </svg>
+                    <input id="activitySearchInput" type="text" placeholder="Search" oninput="handleSearchInput(this.value)"
+                      class="w-36 sm:w-44 pl-8 pr-3 py-1.5 rounded-xl bg-white dark:bg-[#1A202E] border border-slate-200/80 dark:border-slate-700/80 text-[12.5px] text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-[#4F46E5] transition" />
+                  </div>
+
+                  <!-- Status Filter Select -->
+                  <div class="relative">
+                    <select id="activityStatusFilter" onchange="handleStatusFilter(this.value)" aria-label="Filter by Status"
+                      class="appearance-none pl-3 pr-8 py-1.5 rounded-xl bg-white dark:bg-[#1A202E] border border-slate-200/80 dark:border-slate-700/80 text-[12.5px] font-medium text-slate-700 dark:text-slate-200 hover:border-slate-300 focus:outline-none focus:border-[#4F46E5] cursor-pointer transition">
+                      <option value="ALL">Filter: All</option>
+                      <option value="Completed">Completed</option>
+                      <option value="Pending">Pending</option>
+                      <option value="In Progress">In Progress</option>
+                    </select>
+                    <svg class="w-3.5 h-3.5 text-slate-500 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" d="M4 6h16M7 12h10M10 18h4" />
+                    </svg>
+                  </div>
+
+                  <!-- Create Activity CTA -->
+                  <button type="button" onclick="openActivityModal()"
+                    class="px-3.5 py-1.5 rounded-xl bg-[#4F46E5] hover:bg-[#4338CA] text-white text-[12.5px] font-medium shadow-xs shadow-indigo-500/20 transition flex items-center gap-1">
+                    <span>+</span> Add
+                  </button>
+                </div>
+              </div>
+
+              <!-- Horizontal Scrollable Table Wrapper -->
+              <div class="overflow-x-auto rounded-2xl border border-slate-100 dark:border-slate-800/80">
+                <table class="w-full text-left border-collapse min-w-[640px]">
+                  <thead>
+                    <tr class="bg-[#F8F9FB] dark:bg-[#1A202E] text-slate-500 dark:text-slate-400 text-[12px] font-medium border-b border-slate-100 dark:border-slate-800">
+                      <th class="py-3 pl-4 pr-2 w-10">
+                        <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this.checked)" class="nexora-checkbox" aria-label="Select all rows" />
+                      </th>
+                      <th class="py-3 px-3 cursor-pointer hover:text-slate-900 dark:hover:text-white select-none" onclick="sortActivities('id')">
+                        <div class="flex items-center gap-1">Order ID <span id="sort-icon-id" class="text-[10px] opacity-60">↕</span></div>
+                      </th>
+                      <th class="py-3 px-3 cursor-pointer hover:text-slate-900 dark:hover:text-white select-none" onclick="sortActivities('title')">
+                        <div class="flex items-center gap-1">Activity <span id="sort-icon-title" class="text-[10px] opacity-60">↕</span></div>
+                      </th>
+                      <th class="py-3 px-3 cursor-pointer hover:text-slate-900 dark:hover:text-white select-none" onclick="sortActivities('price')">
+                        <div class="flex items-center gap-1">Price <span id="sort-icon-price" class="text-[10px] opacity-60">↕</span></div>
+                      </th>
+                      <th class="py-3 px-3 cursor-pointer hover:text-slate-900 dark:hover:text-white select-none" onclick="sortActivities('status')">
+                        <div class="flex items-center gap-1">Status <span id="sort-icon-status" class="text-[10px] opacity-60">↕</span></div>
+                      </th>
+                      <th class="py-3 px-3 cursor-pointer hover:text-slate-900 dark:hover:text-white select-none" onclick="sortActivities('date')">
+                        <div class="flex items-center gap-1">Date <span id="sort-icon-date" class="text-[10px] opacity-60">↕</span></div>
+                      </th>
+                      <th class="py-3 pl-2 pr-4 w-10 text-right"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="activitiesTableBody" class="divide-y divide-slate-100 dark:divide-slate-800/70 text-[13px]">
+                    <!-- Populated dynamically via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Table Footer: Pagination -->
+            <div class="flex flex-wrap items-center justify-between gap-3 pt-4 text-[12px] text-slate-500 dark:text-slate-400">
+              <p id="paginationSummary">Showing 1–5 of 10 activities</p>
+              <div class="flex items-center gap-1.5">
+                <button type="button" id="prevPageBtn" onclick="changePage(-1)"
+                  class="px-3 py-1.5 rounded-lg border border-slate-200/80 dark:border-slate-700/80 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-40 disabled:pointer-events-none font-medium transition">
+                  Previous
+                </button>
+                <span id="pageIndicator" class="px-2.5 py-1 rounded-lg bg-[#4F46E5]/10 text-[#4F46E5] dark:text-indigo-400 font-semibold">1 / 2</span>
+                <button type="button" id="nextPageBtn" onclick="changePage(1)"
+                  class="px-3 py-1.5 rounded-lg border border-slate-200/80 dark:border-slate-700/80 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-40 disabled:pointer-events-none font-medium transition">
+                  Next
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           VIEW 2: ACTIVITY (DEDICATED LEDGER & CASHFLOW ANALYTICS)
+           ====================================================================== -->
+      <section id="view-activity" class="spa-view hidden space-y-5 animate-stagger-1">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h1 class="text-[26px] font-semibold text-slate-900 dark:text-white">Activity & Ledger Stream</h1>
+            <p class="text-[13.5px] text-slate-500 dark:text-slate-400">Full audit trail of corporate disbursements, subscriptions, and incoming settlements.</p>
+          </div>
+          <div class="flex items-center gap-2.5">
+            <button type="button" onclick="exportActivitiesCSV()" class="px-4 py-2 rounded-full bg-white dark:bg-[#131722] border border-slate-200 dark:border-slate-800 text-[13px] font-medium text-slate-700 dark:text-slate-200 hover:border-indigo-400 transition">
+              Export CSV
+            </button>
+            <button type="button" onclick="openActivityModal()" class="px-4 py-2 rounded-full bg-[#4F46E5] hover:bg-[#4338CA] text-white text-[13px] font-medium shadow-sm shadow-indigo-500/20 transition">
+              + Record Transaction
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-white dark:bg-[#131722] rounded-[22px] p-5 border border-slate-100 dark:border-slate-800">
+            <p class="text-[12.5px] text-slate-400 font-medium">Completed Volume</p>
+            <p id="ledgerCompletedTotal" class="text-[26px] font-bold text-slate-900 dark:text-white mt-1">$81,600</p>
+            <span class="inline-block mt-2 text-[11.5px] font-semibold text-emerald-600 bg-emerald-50 dark:bg-emerald-500/15 px-2.5 py-0.5 rounded-full">Settled & Verified</span>
+          </div>
+          <div class="bg-white dark:bg-[#131722] rounded-[22px] p-5 border border-slate-100 dark:border-slate-800">
+            <p class="text-[12.5px] text-slate-400 font-medium">In Progress Clearing</p>
+            <p id="ledgerProgressTotal" class="text-[26px] font-bold text-slate-900 dark:text-white mt-1">$50,200</p>
+            <span class="inline-block mt-2 text-[11.5px] font-semibold text-amber-600 bg-amber-50 dark:bg-amber-500/15 px-2.5 py-0.5 rounded-full">Processing Batch</span>
+          </div>
+          <div class="bg-white dark:bg-[#131722] rounded-[22px] p-5 border border-slate-100 dark:border-slate-800">
+            <p class="text-[12.5px] text-slate-400 font-medium">Pending Authorization</p>
+            <p id="ledgerPendingTotal" class="text-[26px] font-bold text-slate-900 dark:text-white mt-1">$32,750</p>
+            <span class="inline-block mt-2 text-[11.5px] font-semibold text-rose-500 bg-rose-50 dark:bg-rose-500/15 px-2.5 py-0.5 rounded-full">Awaiting Approval</span>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-[#131722] rounded-[24px] p-5 border border-slate-100 dark:border-slate-800">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-[15px] font-semibold text-slate-900 dark:text-white">Complete Transaction Directory</h3>
+            <button type="button" onclick="switchTab('overview')" class="text-[12.5px] font-medium text-[#4F46E5] hover:underline">← Back to Overview</button>
+          </div>
+          <div id="fullLedgerContainer" class="overflow-x-auto rounded-2xl border border-slate-100 dark:border-slate-800">
+            <!-- Cloned interactive rows rendered here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           VIEW 3: MANAGE (6 MULTI-CURRENCY WALLETS & VIRTUAL CARDS)
+           ====================================================================== -->
+      <section id="view-manage" class="spa-view hidden space-y-5 animate-stagger-1">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h1 class="text-[26px] font-semibold text-slate-900 dark:text-white">Manage Wallets & Corporate Cards</h1>
+            <p class="text-[13.5px] text-slate-500 dark:text-slate-400">Configure all 6 multi-currency treasury accounts and issue virtual cards.</p>
+          </div>
+          <button type="button" onclick="openAddCardModal()" class="px-4 py-2 rounded-full bg-[#4F46E5] hover:bg-[#4338CA] text-white text-[13px] font-medium shadow-sm shadow-indigo-500/20 transition">
+            + Issue New Card
+          </button>
+        </div>
+
+        <!-- All 6 Wallets Grid -->
+        <div class="bg-white dark:bg-[#131722] rounded-[24px] p-5 border border-slate-100 dark:border-slate-800">
+          <h3 class="text-[15px] font-semibold text-slate-900 dark:text-white mb-4">Multi-Currency Wallets (6 Active Accounts)</h3>
+          <div id="allSixWalletsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- All Issued Cards -->
+        <div class="bg-white dark:bg-[#131722] rounded-[24px] p-5 border border-slate-100 dark:border-slate-800">
+          <h3 class="text-[15px] font-semibold text-slate-900 dark:text-white mb-4">Issued Virtual & Physical Cards</h3>
+          <div id="manageCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           VIEW 4: PROGRAM (NEXORA REWARDS & CASHBACK TIERS)
+           ====================================================================== -->
+      <section id="view-program" class="spa-view hidden space-y-5 animate-stagger-1">
+        <div class="rounded-[24px] p-6 sm:p-8 bg-gradient-to-r from-[#4F46E5] via-[#554CEB] to-[#6366F1] text-white flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-lg shadow-indigo-500/20">
+          <div class="max-w-xl">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F59E0B] text-slate-950 text-[11.5px] font-bold">
+              ★ NEXORA EXECUTIVE TIER
+            </span>
+            <h1 class="text-[26px] sm:text-[30px] font-bold mt-3 leading-tight">Earn 2.5% Instant Treasury Yield & Partner Credits</h1>
+            <p class="text-white/85 text-[13.5px] mt-1.5">Invite partner organizations or route cloud software spend through Nexora Virtual Cards to unlock Amber Gold rebates.</p>
+          </div>
+          <div class="bg-white/15 backdrop-blur-md rounded-2xl p-4 border border-white/20 w-full md:w-auto">
+            <p class="text-[11.5px] uppercase tracking-wider text-white/75 font-semibold">Your Referral Code</p>
+            <div class="flex items-center gap-2 mt-1.5">
+              <code id="referralCodeText" class="text-[15px] font-bold bg-slate-950/30 px-3 py-1.5 rounded-xl">NEXORA-AIDEN-2026</code>
+              <button type="button" onclick="copyReferralCode()" class="px-3.5 py-1.5 rounded-xl bg-[#F59E0B] hover:bg-amber-400 text-slate-950 font-semibold text-[12.5px] transition">
+                Copy
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div class="bg-white dark:bg-[#131722] rounded-[24px] p-5 border border-slate-100 dark:border-slate-800">
+            <span class="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-500/15 text-[#4F46E5] flex items-center justify-center font-bold text-lg">☁</span>
+            <h3 class="text-[15px] font-semibold text-slate-900 dark:text-white mt-3">Cloud Infrastructure Rebate</h3>
+            <p class="text-[12.5px] text-slate-500 dark:text-slate-400 mt-1">Get $5,000 in AWS & GCP credits when paying invoices with your Nexora Obsidian Card.</p>
+            <button type="button" onclick="showToast('Cloud Infrastructure Rebate activated!', 'success')" class="mt-4 text-[12.5px] font-semibold text-[#4F46E5] hover:underline">Activate Perk →</button>
+          </div>
+          <div class="bg-white dark:bg-[#131722] rounded-[24px] p-5 border border-slate-100 dark:border-slate-800">
+            <span class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-500/15 text-[#F59E0B] flex items-center justify-center font-bold text-lg">✈</span>
+            <h3 class="text-[15px] font-semibold text-slate-900 dark:text-white mt-3">Global Executive Lounge Pass</h3>
+            <p class="text-[12.5px] text-slate-500 dark:text-slate-400 mt-1">Complimentary priority airport lounge access across 1,300+ international terminals.</p>
+            <button type="button" onclick="showToast('Lounge Pass QR sent to aiden.pratama@nexora.io', 'success')" class="mt-4 text-[12.5px] font-semibold text-[#4F46E5] hover:underline">View Digital Pass →</button>
+          </div>
+          <div class="bg-white dark:bg-[#131722] rounded-[24px] p-5 border border-slate-100 dark:border-slate-800">
+            <span class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600 flex items-center justify-center font-bold text-lg">⇄</span>
+            <h3 class="text-[15px] font-semibold text-slate-900 dark:text-white mt-3">Zero-Spread FX Weekends</h3>
+            <p class="text-[12.5px] text-slate-500 dark:text-slate-400 mt-1">Convert up to $100,000/mo between USD, EUR, and GBP at interbank mid-market rates.</p>
+            <button type="button" onclick="switchTab('manage')" class="mt-4 text-[12.5px] font-semibold text-[#4F46E5] hover:underline">Open FX Wallets →</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           VIEW 5: ACCOUNT (PROFILE & GOVERNANCE SETTINGS)
+           ====================================================================== -->
+      <section id="view-account" class="spa-view hidden space-y-5 animate-stagger-1">
+        <div class="bg-white dark:bg-[#131722] rounded-[24px] p-6 border border-slate-100 dark:border-slate-800 max-w-3xl">
+          <div class="flex items-center gap-4 pb-6 border-b border-slate-100 dark:border-slate-800">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=85" alt="Aiden Pratama" class="w-16 h-16 rounded-full object-cover ring-4 ring-indigo-500/15" />
+            <div>
+              <h2 class="text-[18px] font-bold text-slate-900 dark:text-white">Aiden Pratama</h2>
+              <p class="text-[13px] text-slate-500 dark:text-slate-400">Principal Treasury Director • Nexora Enterprise</p>
+              <span class="inline-block mt-1 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600">KYC Verified • 2FA Hardware Key Active</span>
+            </div>
+          </div>
+
+          <form onsubmit="saveAccountSettings(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+            <div>
+              <label class="block text-[12px] font-medium text-slate-500 mb-1">Full Name</label>
+              <input type="text" value="Aiden Pratama" class="w-full px-3.5 py-2 rounded-xl bg-[#F8F9FB] dark:bg-[#1A202E] border border-slate-200 dark:border-slate-700 text-[13.5px]" />
+            </div>
+            <div>
+              <label class="block text-[12px] font-medium text-slate-500 mb-1">Work Email</label>
+              <input type="email" value="aiden.pratama@nexora.io" class="w-full px-3.5 py-2 rounded-xl bg-[#F8F9FB] dark:bg-[#1A202E] border border-slate-200 dark:border-slate-700 text-[13.5px]" />
+            </div>
+            <div>
+              <label class="block text-[12px] font-medium text-slate-500 mb-1">Monthly Card Spending Cap ($)</label>
+              <input type="number" id="accountLimitInput" value="5500" class="w-full px-3.5 py-2 rounded-xl bg-[#F8F9FB] dark:bg-[#1A202E] border border-slate-200 dark:border-slate-700 text-[13.5px]" />
+            </div>
+            <div>
+              <label class="block text-[12px] font-medium text-slate-500 mb-1">Default Reporting Currency</label>
+              <select id="accountCurrencySelect" class="w-full px-3.5 py-2 rounded-xl bg-[#F8F9FB] dark:bg-[#1A202E] border border-slate-200 dark:border-slate-700 text-[13.5px]">
+                <option value="USD">USD — US Dollar ($)</option>
+                <option value="EUR">EUR — Euro (€)</option>
+                <option value="GBP">GBP — British Pound (£)</option>
+              </select>
+            </div>
+            <div class="sm:col-span-2 flex justify-end gap-2.5 pt-2">
+              <button type="submit" class="px-5 py-2 rounded-full bg-[#4F46E5] hover:bg-[#4338CA] text-white text-[13px] font-medium shadow-sm transition">
+                Save Preferences
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           VIEW 6: REPORTS (EXECUTIVE FINANCIAL STATEMENTS)
+           ====================================================================== -->
+      <section id="view-reports" class="spa-view hidden space-y-5 animate-stagger-1">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h1 class="text-[26px] font-semibold text-slate-900 dark:text-white">Financial Reports & P&L Statements</h1>
+            <p class="text-[13.5px] text-slate-500 dark:text-slate-400">8-month audited breakdown of Profit, Operating Loss, and Net Margin.</p>
+          </div>
+          <button type="button" onclick="exportActivitiesCSV()" class="px-4 py-2 rounded-full bg-[#4F46E5] text-white text-[13px] font-medium shadow-sm">
+            Download Statement (.CSV)
+          </button>
+        </div>
+
+        <div class="bg-white dark:bg-[#131722] rounded-[24px] p-5 border border-slate-100 dark:border-slate-800 overflow-x-auto">
+          <table class="w-full text-left border-collapse min-w-[540px]">
+            <thead>
+              <tr class="bg-[#F8F9FB] dark:bg-[#1A202E] text-slate-500 text-[12px] font-medium border-b border-slate-100 dark:border-slate-800">
+                <th class="py-3 px-4">Period (2026)</th>
+                <th class="py-3 px-4">Gross Profit</th>
+                <th class="py-3 px-4">Operating Loss</th>
+                <th class="py-3 px-4">Net Margin</th>
+                <th class="py-3 px-4">Audit Status</th>
+              </tr>
+            </thead>
+            <tbody id="reportsTableBody" class="divide-y divide-slate-100 dark:divide-slate-800 text-[13px]">
+              <!-- Populated dynamically via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ==========================================================================
+       MODALS (CREATE/EDIT ACTIVITY, QUICK TRANSFER/REQUEST, ADD CARD, DELETE CONFIRM)
+       ========================================================================== -->
+
+  <!-- 1. Create / Edit Activity Modal -->
+  <div id="activityModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/50 backdrop-blur-xs">
+    <div class="bg-white dark:bg-[#131722] w-full max-w-md rounded-[24px] p-6 border border-slate-100 dark:border-slate-800 shadow-2xl animate-stagger-1">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+        <h3 id="activityModalTitle" class="text-[17px] font-bold text-slate-900 dark:text-white">Add New Activity</h3>
+        <button type="button" onclick="closeModal('activityModal')" class="w-8 h-8 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400">✕</button>
+      </div>
+      <form id="activityForm" onsubmit="saveActivityForm(event)" class="space-y-4 mt-4">
+        <input type="hidden" id="editActivityIndex" value="-1" />
+        <div>
+          <label class="block text-[12px] font-medium text-slate-500 mb-1">Activity / Merchant Title *</label>
+          <input type="text" id="inputActivityTitle" required placeholder="e.g., Cloud Server Subscription"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-[#F8F9FB] dark:bg-[#1A202E] border border-slate-200 dark:border-slate-700 text-[13.5px] focus:outline-none focus:border-[#4F46E5]" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[12px] font-medium text-slate-500 mb-1">Amount (USD) *</label>
+            <input type="number" id="inputActivityPrice" required min="1" step="any" placeholder="12500"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-[#F8F9FB] dark:bg-[#1A202E] border border-slate-200 dark:border-slate-700 text-[13.5px] focus:outline-none focus:border-[#4F46E5]" />
+          </div>
+          <div>
+            <label class="block text-[12px] font-medium text-slate-500 mb-1">Status</label>
+            <select id="inputActivityStatus"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-[#F8F9FB] dark:bg-[#1A202E] border border-slate-200 dark:border-slate-700 text-[13.5px] focus:outline-none focus:border-[#4F46E5]">
+              <option value="Completed">Completed</option>
+              <option value="Pending">Pending</option>
+              <option value="In Progress">In Progress</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[12px] font-medium text-slate-500 mb-1">Category Icon</label>
+            <select id="inputActivityIcon"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-[#F8F9FB] dark:bg-[#1A202E] border border-slate-200 dark:border-slate-700 text-[13.5px] focus:outline-none focus:border-[#4F46E5]">
+              <option value="app">Mobile App</option>
+              <option value="hotel">Hotel & Stay</option>
+              <option value="flight">Flight & Travel</option>
+              <option value="grocery">Retail & Grocery</option>
+              <option value="software">Software License</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[12px] font-medium text-slate-500 mb-1">Flow Type</label>
+            <select id="inputActivityFlow"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-[#F8F9FB] dark:bg-[#1A202E] border border-slate-200 dark:border-slate-700 text-[13.5px] focus:outline-none focus:border-[#4F46E5]">
+              <option value="expense">Outgoing Spend (-)</option>
+              <option value="income">Incoming Settlement (+)</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex justify-end gap-2.5 pt-3">
+          <button type="button" onclick="closeModal('activityModal')" class="px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[13px] font-medium">Cancel</button>
+          <button type="submit" class="px-5 py-2 rounded-full bg-[#4F46E5] hover:bg-[#4338CA] text-white text-[13px] font-medium shadow-sm">Save Activity</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. Transfer / Request Quick Modal -->
+  <div id="quickActionModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/50 backdrop-blur-xs">
+    <div class="bg-white dark:bg-[#131722] w-full max-w-md rounded-[24px] p-6 border border-slate-100 dark:border-slate-800 shadow-2xl">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+        <h3 id="quickActionTitle" class="text-[17px] font-bold text-slate-900 dark:text-white">Instant Transfer</h3>
+        <button type="button" onclick="closeModal('quickActionModal')" class="w-8 h-8 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400">✕</button>
+      </div>
+      <form onsubmit="submitQuickAction(event)" class="space-y-4 mt-4">
+        <input type="hidden" id="quickActionMode" value="Transfer" />
+        <div>
+          <label class="block text-[12px] font-medium text-slate-500 mb-1">Counterparty / Recipient</label>
+          <input type="text" id="quickCounterparty" required placeholder="e.g., Horizon Ventures Ltd."
+            class="w-full px-3.5 py-2.5 rounded-xl bg-[#F8F9FB] dark:bg-[#1A202E] border border-slate-200 dark:border-slate-700 text-[13.5px]" />
+        </div>
+        <div>
+          <label class="block text-[12px] font-medium text-slate-500 mb-1">Amount (USD)</label>
+          <input type="number" id="quickAmount" required min="1" step="any" placeholder="2500"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-[#F8F9FB] dark:bg-[#1A202E] border border-slate-200 dark:border-slate-700 text-[13.5px]" />
+        </div>
+        <div class="flex justify-end gap-2.5 pt-2">
+          <button type="button" onclick="closeModal('quickActionModal')" class="px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[13px] font-medium">Cancel</button>
+          <button type="submit" id="quickSubmitBtn" class="px-5 py-2 rounded-full bg-[#4F46E5] hover:bg-[#4338CA] text-white text-[13px] font-medium shadow-sm">Confirm Transfer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. Add New Card Modal -->
+  <div id="addCardModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/50 backdrop-blur-xs">
+    <div class="bg-white dark:bg-[#131722] w-full max-w-md rounded-[24px] p-6 border border-slate-100 dark:border-slate-800 shadow-2xl">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+        <h3 class="text-[17px] font-bold text-slate-900 dark:text-white">Issue New Virtual Card</h3>
+        <button type="button" onclick="closeModal('addCardModal')" class="w-8 h-8 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center text-slate-400">✕</button>
+      </div>
+      <form onsubmit="submitNewCard(event)" class="space-y-4 mt-4">
+        <div>
+          <label class="block text-[12px] font-medium text-slate-500 mb-1">Card Label</label>
+          <input type="text" id="newCardLabel" required placeholder="e.g., SaaS Procurement Card"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-[#F8F9FB] dark:bg-[#1A202E] border border-slate-200 dark:border-slate-700 text-[13.5px]" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[12px] font-medium text-slate-500 mb-1">Last 4 Digits</label>
+            <input type="text" id="newCardDigits" required maxlength="4" pattern="[0-9]{4}" placeholder="8842"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-[#F8F9FB] dark:bg-[#1A202E] border border-slate-200 dark:border-slate-700 text-[13.5px]" />
+          </div>
+          <div>
+            <label class="block text-[12px] font-medium text-slate-500 mb-1">Card Finish</label>
+            <select id="newCardTheme" class="w-full px-3.5 py-2.5 rounded-xl bg-[#F8F9FB] dark:bg-[#1A202E] border border-slate-200 dark:border-slate-700 text-[13.5px]">
+              <option value="obsidian">Obsidian Matte</option>
+              <option value="indigo">Royal Indigo</option>
+              <option value="amber">Amber Gold</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex justify-end gap-2.5 pt-2">
+          <button type="button" onclick="closeModal('addCardModal')" class="px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[13px] font-medium">Cancel</button>
+          <button type="submit" class="px-5 py-2 rounded-full bg-[#4F46E5] hover:bg-[#4338CA] text-white text-[13px] font-medium">Issue Card</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. Edit Monthly Spending Limit Modal -->
+  <div id="limitModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/50 backdrop-blur-xs">
+    <div class="bg-white dark:bg-[#131722] w-full max-w-sm rounded-[24px] p-6 border border-slate-100 dark:border-slate-800 shadow-2xl">
+      <h3 class="text-[17px] font-bold text-slate-900 dark:text-white">Adjust Monthly Limit</h3>
+      <p class="text-[12.5px] text-slate-500 mt-1">Set the maximum monthly spending threshold across active cards.</p>
+      <form onsubmit="submitNewLimit(event)" class="mt-4 space-y-4">
+        <div>
+          <label class="block text-[12px] font-medium text-slate-500 mb-1">Monthly Limit (USD)</label>
+          <input type="number" id="modalLimitInput" required min="500" step="100" value="5500"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-[#F8F9FB] dark:bg-[#1A202E] border border-slate-200 dark:border-slate-700 text-[14px] font-semibold" />
+        </div>
+        <div class="flex justify-end gap-2">
+          <button type="button" onclick="closeModal('limitModal')" class="px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 text-[13px] font-medium">Cancel</button>
+          <button type="submit" class="px-5 py-2 rounded-full bg-[#4F46E5] text-white text-[13px] font-medium">Update Limit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. Elegant Delete Confirmation Modal -->
+  <div id="deleteConfirmModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/50 backdrop-blur-xs">
+    <div class="bg-white dark:bg-[#131722] w-full max-w-sm rounded-[24px] p-6 border border-slate-100 dark:border-slate-800 shadow-2xl">
+      <div class="w-11 h-11 rounded-2xl bg-rose-50 dark:bg-rose-500/15 text-rose-500 flex items-center justify-center mb-3">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
+      </div>
+      <h3 class="text-[17px] font-bold text-slate-900 dark:text-white">Confirm Deletion</h3>
+      <p id="deleteConfirmMessage" class="text-[13px] text-slate-500 dark:text-slate-400 mt-1">Are you sure you want to remove this activity record? Balance metrics will recalculate automatically.</p>
+      <div class="flex justify-end gap-2.5 mt-5">
+        <button type="button" onclick="closeModal('deleteConfirmModal')" class="px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[13px] font-medium">Cancel</button>
+        <button type="button" id="confirmDeleteActionBtn" class="px-5 py-2 rounded-full bg-rose-600 hover:bg-rose-700 text-white text-[13px] font-medium shadow-sm">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Toast Notification Container -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 pointer-events-none"></div>
+
+  <!-- ==========================================================================
+       APPLICATION LOGIC, STATE MANAGEMENT & CRUD ENGINE
+       ========================================================================== -->
+  <!-- Nexora dashboard logic -->
+  <script src="assets/js/main.js" defer></script>
+</body>
+</html>

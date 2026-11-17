@@ -1,0 +1,162 @@
+    /* ==========================================================================
+       1. BASE TYPOGRAPHY, SCROLLBARS & THEME TOKENS
+       ========================================================================== */
+    :root {
+      --bg-canvas: #F4F5F8;
+      --bg-surface: #FFFFFF;
+      --bg-subsurface: #F8F9FB;
+      --border-subtle: rgba(226, 232, 240, 0.85);
+      --text-primary: #0F172A;
+      --text-secondary: #64748B;
+      --accent-primary: #4F46E5;
+      --accent-secondary: #F59E0B;
+    }
+
+    html.dark {
+      --bg-canvas: #0B0E14;
+      --bg-surface: #131722;
+      --bg-subsurface: #1A202E;
+      --border-subtle: rgba(51, 65, 85, 0.55);
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-canvas);
+      color: var(--text-primary);
+      transition: background-color 0.28s cubic-bezier(0.16, 1, 0.3, 1), color 0.28s ease;
+      overflow-x: hidden;
+    }
+
+    /* Custom Slim Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.35);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(79, 70, 229, 0.65);
+    }
+
+    /* ==========================================================================
+       2. SIGNATURE PATTERNS (CHART STRIPES, PROGRESS TRACK & CARD TEXTURES)
+       ========================================================================== */
+    /* Diagonal Indigo Stripes for Profit Bars */
+    .profit-bar-pattern {
+      background-color: #4F46E5;
+      background-image: repeating-linear-gradient(
+        -45deg,
+        #4F46E5,
+        #4F46E5 4.5px,
+        #6861F2 4.5px,
+        #6861F2 8.5px
+      );
+    }
+
+    /* Diagonal Hatched Track for Monthly Spending Limit */
+    .spending-track-pattern {
+      background-color: #F1F5F9;
+      background-image: repeating-linear-gradient(
+        -45deg,
+        #F1F5F9,
+        #F1F5F9 4px,
+        #E2E8F0 4px,
+        #E2E8F0 8px
+      );
+    }
+    html.dark .spending-track-pattern {
+      background-color: #1E2536;
+      background-image: repeating-linear-gradient(
+        -45deg,
+        #1E2536,
+        #1E2536 4px,
+        #283147 4px,
+        #283147 8px
+      );
+    }
+
+    /* Subtle Geometric Grid Overlay on Obsidian Virtual Card */
+    .obsidian-card-grid {
+      background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    /* ==========================================================================
+       3. ADAPTIVE CORPORATE/FINTECH MICRO-INTERACTIONS & STAGGERED ANIMATIONS
+       ========================================================================== */
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes growBar {
+      from {
+        transform: scaleY(0);
+      }
+      to {
+        transform: scaleY(1);
+      }
+    }
+
+    .animate-stagger-1 { animation: fadeSlideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.03s both; }
+    .animate-stagger-2 { animation: fadeSlideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both; }
+    .animate-stagger-3 { animation: fadeSlideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.13s both; }
+    .animate-stagger-4 { animation: fadeSlideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both; }
+    .animate-stagger-5 { animation: fadeSlideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.23s both; }
+
+    .bar-animate {
+      transform-origin: bottom;
+      animation: growBar 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .bento-card {
+      transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, border-color 0.22s ease;
+    }
+    .bento-card:hover {
+      box-shadow: 0 10px 28px -6px rgba(15, 23, 42, 0.06);
+    }
+    html.dark .bento-card:hover {
+      box-shadow: 0 12px 30px -6px rgba(0, 0, 0, 0.45);
+    }
+
+    /* Custom Checkbox */
+    .nexora-checkbox {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 17px;
+      height: 17px;
+      border-radius: 5px;
+      border: 1.5px solid #CBD5E1;
+      background-color: transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.16s ease;
+    }
+    html.dark .nexora-checkbox {
+      border-color: #475569;
+    }
+    .nexora-checkbox:checked {
+      background-color: #4F46E5;
+      border-color: #4F46E5;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'%3E%3Cpath fill-rule='evenodd' d='M16.704 5.29a1 1 0 010 1.414l-7.25 7.25a1 1 0 01-1.414 0l-3.25-3.25a1 1 0 111.414-1.414L8.75 11.536l6.54-6.54a1 1 0 011.414 0z' clip-rule='evenodd'/%3E%3C/svg%3E");
+      background-size: 13px 13px;
+      background-position: center;
+      background-repeat: no-repeat;
+    }

@@ -1,0 +1,18 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Tool artifacts
+.dist/
+.qodo/
+
+# Superseded monolithic draft (kept locally, not part of the template)
+nexora_financial_dashboard.html
+
+# Agent knowledge-graph tooling output
+graphify-out/
+
+# Editor
+.vscode/
+.idea/
